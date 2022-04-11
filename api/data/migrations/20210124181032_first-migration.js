@@ -91,6 +91,9 @@ exports.up = async (knex) => {
     recipes.string('recipe_prep_duration');
     
     recipes.string('recipe_cook_duration');
+
+    recipes.integer('recipe_servings')
+    .notNullable();
     
     recipes.integer('cuisine_type_id') 
     .unsigned()
@@ -136,7 +139,7 @@ exports.up = async (knex) => {
     .defaultTo(knex.fn.now());
   })
   .createTable('recipe_ingredients', recipe_ingredients => {
-    recipe_ingredients.increments('recipe_ingredient');
+    recipe_ingredients.increments('recipe_ingredient_id');
     
     recipe_ingredients.decimal('recipe_ingredient_quantity');
     
@@ -185,6 +188,9 @@ exports.up = async (knex) => {
   })
   .createTable('recipe_tags', recipe_tags => {
     recipe_tags.increments('recipe_tag_id');
+    
+    recipe_tags.integer('recipe_tag_index')
+    .notNullable();
     
     recipe_tags.integer('tag_id')
     .unsigned()
