@@ -89,16 +89,16 @@ const findAll = async () => {
         
         ingredient_type: {
           ingredient_type_id: rp_ing.ingredient_type_id,
-          ingredient_type_name: rp_ing.ingredient_type_name,
-          ingredient_type_created_at: rp_ing.ingredient_type_created_at,
-          ingredient_type_modified_at: rp_ing.ingredient_type_modified_at
+          name: rp_ing.ingredient_type_name,
+          created_at: rp_ing.ingredient_type_created_at,
+          modified_at: rp_ing.ingredient_type_modified_at
         },
         
         measurement_unit: {
           measurement_unit_id: rp_ing.measurement_unit_id,
-          measurement_unit_name: rp_ing.measurement_unit_name,
-          measurement_unit_created_at: rp_ing.measurement_unit_created_at,
-          measurement_unit_modified_at: rp_ing.measurement_unit_modified_at
+          name: rp_ing.measurement_unit_name,
+          created_at: rp_ing.measurement_unit_created_at,
+          modified_at: rp_ing.measurement_unit_modified_at
         }
       }
     })
