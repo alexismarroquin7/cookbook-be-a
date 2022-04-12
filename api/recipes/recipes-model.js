@@ -205,6 +205,20 @@ const findAll = async () => {
   return recipes;
 }
 
+const findByRecipeId = async (recipe_id) => {
+
+  let recipe = await db('recipes as r').where({recipe_id}).first();
+  
+  if(!recipe) return null;
+  
+  const recipes = await findAll();
+  
+  [ recipe ] = recipes.filter(r => r.recipe_id === recipe_id);
+  
+  return recipe;
+}
+
 module.exports = {
-  findAll
+  findAll,
+  findByRecipeId
 }

@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Recipe = require('./recipes-model');
+const { validateRecipeExistsByRecipeId } = require('./recipes-middleware');
 
 router.get('/', async (req, res, next) => {
   try {
@@ -8,6 +9,13 @@ router.get('/', async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+});
+
+router.get(
+  '/:recipe_id',
+  validateRecipeExistsByRecipeId,
+  (req, res) => {
+    res.status(200).json(req.recipe);
 });
 
 router.use((err, req, res, next) => { // eslint-disable-line
