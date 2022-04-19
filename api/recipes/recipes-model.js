@@ -317,8 +317,68 @@ const create = async (recipe) => {
   return newRecipeToUse;
 }
 
+const deleteByRecipeId = async (recipe_id) => {
+  const recipeToDelete = await findByRecipeId(recipe_id);
+
+  // delete recipe_likes
+  await db('recipe_likes as rp_like')
+  .where({
+    recipe_id
+  })
+  .delete();
+
+
+  // delete recipe_steps
+  await db('recipe_steps as rp_step')
+  .where({
+    recipe_id
+  })
+  .delete();
+
+  // delete recipe_ingredients
+  await db('recipe_ingredients as rp_ing')
+  .where({
+    recipe_id
+  })
+  .delete();
+
+  // delete recipe_tags
+  await db('recipe_tags as rp_tag')
+  .where({
+    recipe_id
+  })
+  .delete();
+  
+  recipeToDelete.recipe_tags.forEach(async rp_tag => {
+    // check if tag is being used by other recipes
+    const recipesWithSameTag = await db('recipe_tags')
+    .where({
+      tag_id: rp_tag.tag.tag_id
+    });
+    
+    // delete tags that are unused
+    if(recipesWithSameTag.length === 0){
+      await db('tags as t')
+      .where({
+        tag_id: rp_tag.tag.tag_id
+      })
+      .delete();
+    }
+
+  });
+
+  await db('recipes as r')
+  .where({
+    recipe_id: recipeToDelete.recipe_id
+  })
+  .delete();
+
+  return recipeToDelete;
+}
+
 module.exports = {
   findAll,
   findByRecipeId,
-  create
+  create,
+  deleteByRecipeId
 }
