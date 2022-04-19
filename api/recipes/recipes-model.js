@@ -218,7 +218,107 @@ const findByRecipeId = async (recipe_id) => {
   return recipe;
 }
 
+const create = async (recipe) => {
+  
+  let cuisine_type_id;
+
+  const cuisine_type = await db('cuisine_types as c_type')
+  .where({
+    'c_type.cuisine_type_name': recipe.cuisine_type.name
+  })
+  .first();
+
+  if(cuisine_type){
+    cuisine_type_id = cuisine_type.cuisine_type_id;
+  } else {
+    cuisine_type_id = await db('cuisine_types as c_type')
+    .insert({
+      cuisine_type_name: recipe.cuisine_type.name
+    }, ['c_type.cuisine_type_id']);
+  }
+  
+  const [newRecipe] = await db('recipes as r')
+  .insert({
+    recipe_name: recipe.name.trim(),
+    recipe_description: recipe.description.trim(),
+    recipe_difficulty: recipe.difficulty,
+    recipe_prep_duration: JSON.stringify(recipe.prep_duration),
+    recipe_cook_duration: JSON.stringify(recipe.cook_duration),
+    recipe_servings: Number(recipe.servings),
+    cuisine_type_id: cuisine_type_id,
+    user_id: recipe.user_id
+  }, ['r.recipe_id']);
+
+  Promise.all(recipe.ingredients.forEach(async rp_ingredient => {
+
+    const ingredientToUse = await db('ingredients')
+    .where({
+      ingredient_name: rp_ingredient.name
+    })
+    .first();
+    
+    const measurementUnitToUse = await db('measurement_units')
+    .where({
+      measurement_unit_name: rp_ingredient.measurement_unit
+    })
+    .first();
+    
+    await db('recipe_ingredients')
+    .insert({
+      recipe_ingredient_quantity: Number(rp_ingredient.quantity),
+      recipe_ingredient_index: rp_ingredient.index,
+      ingredient_id: ingredientToUse.ingredient_id,
+      measurement_unit_id: measurementUnitToUse.measurement_unit_id,
+      recipe_id: newRecipe.recipe_id
+    });
+  }));
+
+  Promise.all(recipe.steps.forEach(async step => {
+    await db('recipe_steps')
+    .insert({
+      recipe_step_text: step.text,
+      recipe_step_index: step.index,
+      recipe_id: newRecipe.recipe_id
+    })
+  }))
+  
+  Promise.all(recipe.tags.forEach(async tag => {
+    let tag_id;
+
+    const storedTag = await db('tags')
+    .where({
+      tag_text: tag.text
+    })
+    .first();
+
+    if(storedTag){
+      tag_id = storedTag.tag_id;
+    
+    } else {      
+      const [ newTag ] = await db('tags')
+      .insert({
+        tag_text: tag.text
+      }, ['tags.tag_id']);
+
+      tag_id = newTag.tag_id;
+
+    }
+  
+    await db('recipe_tags')
+    .insert({
+      recipe_tag_index: tag.index,
+      tag_id: tag_id,
+      recipe_id: newRecipe.recipe_id
+    });
+  }));
+
+  const newRecipeToUse = await findByRecipeId(newRecipe.recipe_id);
+
+  return newRecipeToUse;
+}
+
 module.exports = {
   findAll,
-  findByRecipeId
+  findByRecipeId,
+  create
 }
