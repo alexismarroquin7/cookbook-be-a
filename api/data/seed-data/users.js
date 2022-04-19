@@ -1,0 +1,61 @@
+const bcrypt = require('bcryptjs');
+
+const rounds = process.env.DB_ROUNDS 
+? Number(process.env.DB_ROUNDS) 
+: 8;
+
+const userPassword = process.env.TEST_USER_PASSWORD || '1234';
+const hash = bcrypt.hashSync(userPassword, rounds);
+
+const users = [
+  {
+    user_username: 'mordecai',
+    user_email: 'mordecai@gmail.com',	
+    user_password: hash,
+    role_id: 1
+  },
+  {
+    user_username: 'rigby',
+    user_email: 'rigby@gmail.com',	
+    user_password: hash,
+    role_id: 1
+  },
+  {
+    user_username: 'benson',
+    user_email: 'benson@gmail.com',	
+    user_password: hash,
+    role_id: 1
+  },
+  {
+    user_username: 'starla',
+    user_email: 'starla@gmail.com',	
+    user_password: hash,
+    role_id: 1
+  },
+  {
+    user_username: 'muscle_man',
+    user_email: 'muscleman@gmail.com',	
+    user_password: hash,
+    role_id: 1
+  },
+  {
+    user_username: 'skips',
+    user_email: 'skips@gmail.com',	
+    user_password: hash,
+    role_id: 2
+  },
+  {
+    user_username: 'pops',
+    user_email: 'pops@gmail.com',	
+    user_password: hash,
+    role_id: 2
+  },
+  {
+    user_username: 'margaret',
+    user_email: 'margaret@gmail.com',	
+    user_password: hash,
+    role_id: 2
+  },
+];
+
+module.exports = users;
