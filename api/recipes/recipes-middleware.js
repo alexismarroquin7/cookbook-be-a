@@ -22,7 +22,7 @@ const validateRecipeExistsByRecipeId = async (req, res, next) => {
   }
 }
 
-const validateNewRecipeRequiredFields = (req, res, next) => {
+const validateRecipeRequiredFields = (req, res, next) => {
   const {
     name,
     description,
@@ -109,5 +109,5 @@ const validateNewRecipeRequiredFields = (req, res, next) => {
 
 module.exports = {
   validateRecipeExistsByRecipeId,
-  validateNewRecipeRequiredFields
+  validateRecipeRequiredFields
 }
