@@ -10,36 +10,42 @@ const hash = bcrypt.hashSync(userPassword, rounds);
 const users = [
   {
     user_username: 'mordecai',
+    user_display_name: 'Mordo',
     user_email: 'mordecai@gmail.com',	
     user_password: hash,
     role_id: 1
   },
   {
     user_username: 'rigby',
+    user_display_name: 'Rigbo',
     user_email: 'rigby@gmail.com',	
     user_password: hash,
     role_id: 1
   },
   {
     user_username: 'benson',
+    user_display_name: 'Boss',
     user_email: 'benson@gmail.com',	
     user_password: hash,
     role_id: 1
   },
   {
     user_username: 'starla',
+    user_display_name: 'Starla M',
     user_email: 'starla@gmail.com',	
     user_password: hash,
     role_id: 1
   },
   {
     user_username: 'muscle_man',
+    user_display_name: 'Muscle Man',
     user_email: 'muscleman@gmail.com',	
     user_password: hash,
     role_id: 1
   },
   {
     user_username: 'skips',
+    user_display_name: 'Skips the man',
     user_email: 'skips@gmail.com',	
     user_password: hash,
     role_id: 2

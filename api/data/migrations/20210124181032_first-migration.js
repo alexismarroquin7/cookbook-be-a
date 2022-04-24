@@ -16,8 +16,12 @@ exports.up = async (knex) => {
     users.string('user_username')
     .notNullable()
     .unique();
+    
+    users.string('user_display_name');
+
     users.string('user_email')
     .notNullable();
+    
     users.string('user_password');
 
     users.integer('role_id')
@@ -238,10 +242,61 @@ exports.up = async (knex) => {
     recipe_likes.timestamp('recipe_like_modified_at')
     .defaultTo(knex.fn.now());
   })
-  ;
+  .createTable('user_followings', user_followings => {
+    user_followings.increments('user_following_id');
+    
+    user_followings.integer('followed_id') 
+    .unsigned()
+    .notNullable()
+    .references('user_id')
+    .inTable('users')
+    .onUpdate('CASCADE')
+    .onDelete('RESTRICT');
+    
+    user_followings.integer('user_id') 
+    .unsigned()
+    .notNullable()
+    .references('user_id')
+    .inTable('users')
+    .onUpdate('CASCADE')
+    .onDelete('RESTRICT');
+
+    user_followings.timestamp('user_following_created_at')
+    .defaultTo(knex.fn.now());  
+    user_followings.timestamp('user_following_modified_at')
+    .defaultTo(knex.fn.now());
+
+    
+  })
+  .createTable('user_followers', user_followers => {
+    user_followers.increments('user_follower_id');
+    
+    user_followers.integer('follower_id')
+    .unsigned()
+    .notNullable()
+    .references('user_id')
+    .inTable('users')
+    .onUpdate('CASCADE')
+    .onDelete('RESTRICT');
+    
+    user_followers.integer('user_id') 
+    .unsigned()
+    .notNullable()
+    .references('user_id')
+    .inTable('users')
+    .onUpdate('CASCADE')
+    .onDelete('RESTRICT');
+
+    user_followers.timestamp('user_follower_created_at')
+    .defaultTo(knex.fn.now());  
+    user_followers.timestamp('user_follower_modified_at')
+    .defaultTo(knex.fn.now());
+  });
 };
 
 exports.down = async (knex) => {
+  await knex.schema.dropTableIfExists('user_followers');
+  await knex.schema.dropTableIfExists('user_followings');
   await knex.schema.dropTableIfExists('recipe_likes');
   await knex.schema.dropTableIfExists('recipe_tags');
   await knex.schema.dropTableIfExists('tags');

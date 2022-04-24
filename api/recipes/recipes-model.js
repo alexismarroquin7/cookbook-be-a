@@ -131,6 +131,7 @@ const findAll = async () => {
         user: {
           user_id: rp_like.user_id,
           username: rp_like.user_username,
+          display_name: rp_like.user_display_name,
           email: rp_like.user_email,
           created_at: rp_like.user_created_at,
           modified_at: rp_like.user_modified_at,
@@ -166,6 +167,7 @@ const findAll = async () => {
       user: {
         user_id: row.user_id,
         username: row.user_username,
+        display_name: row.user_display_name,
         email: row.user_email,
         created_at: row.user_created_at,
         modified_at: row.user_modified_at,
