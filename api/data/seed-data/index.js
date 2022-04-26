@@ -13,6 +13,8 @@ const recipe_tags = require('./recipe_tags');
 const recipe_likes = require('./recipe_likes');
 const user_followings = require('./user_followings');
 const user_followers = require('./user_followers');
+const comments = require('./comments');
+const recipe_comments = require('./recipe_comments');
 
 module.exports = {
   roles,
@@ -28,6 +30,7 @@ module.exports = {
   recipe_tags,
   recipe_likes,
   user_followings,
-  user_followers
-
+  user_followers,
+  comments,
+  recipe_comments
 }

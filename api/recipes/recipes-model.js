@@ -1,5 +1,7 @@
 const db = require('../data/db-config');
 
+const RecipeComment = require('../recipe_comments/recipe_comments-model');
+
 const findAll = async () => {
   const rows = await db('recipes as rp')
   .leftJoin('cuisine_types as c_type', 'c_type.cuisine_type_id', 'rp.cuisine_type_id')
@@ -145,6 +147,8 @@ const findAll = async () => {
         }
       }
     })
+
+    const recipe_comments = await RecipeComment.findByRecipeId(row.recipe_id);
     
     const recipe = {
       recipe_id: row.recipe_id,
@@ -193,6 +197,8 @@ const findAll = async () => {
       recipe_tags: recipe_tags.length === 0 
       ? []
       : recipe_tags.sort((a, b) => a.index - b.index),
+
+      recipe_comments,
 
       recipe_likes
     }

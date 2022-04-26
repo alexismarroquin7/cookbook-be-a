@@ -12,6 +12,7 @@ const users = [
     user_username: 'mordecai',
     user_display_name: 'Mordo',
     user_email: 'mordecai@gmail.com',	
+    user_bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
     user_password: hash,
     role_id: 1
   },
