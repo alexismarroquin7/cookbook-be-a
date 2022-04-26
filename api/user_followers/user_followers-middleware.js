@@ -4,7 +4,7 @@ const validateUserFollowerExistsByUserFollowerId = async (req, res, next) => {
   const { user_follower_id } = req.params;
 
   try {
-    const user_follower = await UserFollower.findByFollowerId(Number(user_follower_id));
+    const user_follower = await UserFollower.findByUserFollowerId(Number(user_follower_id));
     if(user_follower){
       req.user_follower = user_follower;
       next();

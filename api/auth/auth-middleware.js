@@ -23,7 +23,7 @@ const validateUserExistsByEmail = async (req, res, next) => {
   const { email } = req.body;
 
   try {
-    const user = await User.findByEmail(email);
+    const user = await User.findByEmail(email, { hidePassword: false });
     if(user){
       req.user = user;
       next();

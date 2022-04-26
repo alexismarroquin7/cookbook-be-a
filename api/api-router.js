@@ -11,6 +11,7 @@ const measurementUnitsRouter = require('./measurement_units/measurement_units-ro
 const tagsRouter = require('./tags/tags-router');
 const userFollowingsRouter = require('./user_followings/user_followings-router');
 const userFollowersRouter = require('./user_followers/user_followers-router');
+const recipeCommentsRouter = require('./recipe_comments/recipe_comments-router');
 
 router.use('/roles', rolesRouter);
 router.use('/recipes', recipesRouter);
@@ -23,6 +24,7 @@ router.use('/measurement_units', measurementUnitsRouter);
 router.use('/tags', tagsRouter);
 router.use('/user_followings', userFollowingsRouter);
 router.use('/user_followers', userFollowersRouter);
+router.use('/recipe_comments', recipeCommentsRouter);
 
 router.use((err, req, res, next) => { // eslint-disable-line
   res.status(err.status||500).json({

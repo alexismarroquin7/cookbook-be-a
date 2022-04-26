@@ -18,6 +18,8 @@ exports.up = async (knex) => {
     .unique();
     
     users.string('user_display_name');
+    
+    users.string('user_bio', 200);
 
     users.string('user_email')
     .notNullable();
@@ -291,10 +293,52 @@ exports.up = async (knex) => {
     .defaultTo(knex.fn.now());  
     user_followers.timestamp('user_follower_modified_at')
     .defaultTo(knex.fn.now());
-  });
+  })
+  .createTable('comments', comments => {
+    comments.increments('comment_id');
+    comments.text('comment_text', 200);
+    comments.integer('user_id')
+    .unsigned()
+    .notNullable()
+    .references('user_id')
+    .inTable('users')
+    .onUpdate('CASCADE')
+    .onDelete('RESTRICT');
+    comments.timestamp('comment_created_at')
+    .defaultTo(knex.fn.now());
+    comments.timestamp('comment_moified_at')
+    .defaultTo(knex.fn.now());
+  })
+  .createTable('recipe_comments', recipe_comments => {
+    recipe_comments.increments('recipe_comment_id');
+    
+    recipe_comments.integer('comment_id')
+    .unsigned()
+    .notNullable()
+    .references('comment_id')
+    .inTable('comments')
+    .onUpdate('CASCADE')
+    .onDelete('RESTRICT');
+
+    recipe_comments.integer('recipe_id')
+    .unsigned()
+    .notNullable()
+    .references('recipe_id')
+    .inTable('recipes')
+    .onUpdate('CASCADE')
+    .onDelete('RESTRICT');
+
+    recipe_comments.timestamp('recipe_comment_created_at')
+    .defaultTo(knex.fn.now());
+    recipe_comments.timestamp('recipe_comment_moified_at')
+    .defaultTo(knex.fn.now());
+  })
+  ;
 };
 
 exports.down = async (knex) => {
+  await knex.schema.dropTableIfExists('recipe_comments');
+  await knex.schema.dropTableIfExists('comments');
   await knex.schema.dropTableIfExists('user_followers');
   await knex.schema.dropTableIfExists('user_followings');
   await knex.schema.dropTableIfExists('recipe_likes');
