@@ -7,6 +7,12 @@ const measurements_units = [
   },
   {
     measurement_unit_name: 'tsp'
+  },
+  {
+    measurement_unit_name: 'cups'
+  },
+  {
+    measurement_unit_name: 'slices'
   }
 ];
 

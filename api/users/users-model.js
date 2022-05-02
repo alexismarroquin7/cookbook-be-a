@@ -2,6 +2,9 @@ const db = require("../data/db-config");
 
 const UserFollower = require('../user_followers/user_followers-model');
 const UserFollowing = require('../user_followings/user_followings-model');
+const Recipe = require('../recipes/recipes-model');
+const RecipeLike = require('../recipe_likes/recipe_likes-model');
+const RecipeComment = require('../recipe_comments/recipe_comments-model');
 
 const findAll = async (config = {}) => {
   
@@ -109,10 +112,48 @@ const findByUsername = async (username, config = {}) => {
   return users[0];
 }
 
+const getHomeFeed = async (user_id) => {
+  let feed = {
+    recipes: []
+  };
+  
+  const user = await findByUserId(user_id);
+  const following = await UserFollowing.findByUserId(user.user_id);
+  
+  if(following.length === 0) return feed;
+
+  const userIds = following.map(f => f.followed.user_id);
+  
+  feed.recipes = await Recipe.findByUserIds([user.user_id, ...userIds]);
+  
+  feed.recipes = feed.recipes.sort((a,b) => b.recipe_id - a.recipe_id);
+
+  return feed;
+}
+
+const getActivityFeed = async (user_id) => {
+  let feed = {
+    recipe_likes: [],
+    recipe_comments: []
+  };
+
+  const recipes = await Recipe.findByUserId(user_id);
+  const recipe_ids = recipes.map(r => r.recipe_id);
+  const recipe_likes = await RecipeLike.findByRecipeIds(recipe_ids);
+  const recipe_comments = await RecipeComment.findByRecipeIds(recipe_ids);
+
+  feed.recipe_likes = recipe_likes.sort((a,b) => b.recipe_like_id - a.recipe_like_id);
+  feed.recipe_comments = recipe_comments.sort((a,b) => b.recipe_comment_id - a.recipe_comment_id);
+
+  return feed;
+}
+
 module.exports = {
   findAll,
   findBy,
   findByEmail,
   findByUsername,
-  findByUserId
+  findByUserId,
+  getHomeFeed,
+  getActivityFeed
 }

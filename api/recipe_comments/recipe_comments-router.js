@@ -31,6 +31,15 @@ router.delete('/:recipe_comment_id', validateRecipeCommentExistsByRecipeCommentI
   }
 })
 
+router.put('/:recipe_comment_id', validateRecipeCommentExistsByRecipeCommentId, async (req, res, next) => {
+  try {
+    const recipe_comment = await RecipeComment.updateByRecipeCommentId(req.recipe_comment.recipe_comment_id, req.body);
+    res.status(200).json(recipe_comment);
+  } catch (err) {
+    next(err);
+  }
+})
+
 router.use((err, req, res, next) => { // eslint-disable-line
   res.status(err.status||500).json({
     message: err.message,

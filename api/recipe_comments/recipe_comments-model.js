@@ -1,4 +1,5 @@
 const db = require('../data/db-config');
+const { intToBool, boolToInt } = require('../../utils');
 
 const findAll = async () => {
   const rows = await db('recipe_comments as rp_com')
@@ -10,13 +11,14 @@ const findAll = async () => {
     return {
       recipe_comment_id: row.recipe_comment_id,
       created_at: row.recipe_comment_created_at,
-      moified_at: row.recipe_comment_moified_at,
+      modified_at: row.recipe_comment_modified_at,
+      read: intToBool(row.recipe_comment_read),
       
       comment: {
         comment_id: row.comment_id,
         text: row.comment_text,
         created_at: row.comment_created_at,
-        moified_at: row.comment_moified_at,
+        modified_at: row.comment_modified_at,
       },
       user: {
         user_id: row.user_id,
@@ -53,13 +55,14 @@ const findByRecipeCommentId = async (recipe_comment_id) => {
     return {
       recipe_comment_id: row.recipe_comment_id,
       created_at: row.recipe_comment_created_at,
-      moified_at: row.recipe_comment_moified_at,
+      modified_at: row.recipe_comment_modified_at,
+      read: intToBool(row.recipe_comment_read),
       
       comment: {
         comment_id: row.comment_id,
         text: row.comment_text,
         created_at: row.comment_created_at,
-        moified_at: row.comment_moified_at,
+        modified_at: row.comment_modified_at,
       },
       user: {
         user_id: row.user_id,
@@ -118,13 +121,14 @@ const findByRecipeId = async (recipe_id) => {
     return {
       recipe_comment_id: rp_com.recipe_comment_id,
       created_at: rp_com.recipe_comment_created_at,
-      moified_at: rp_com.recipe_comment_moified_at,
+      modified_at: rp_com.recipe_comment_modified_at,
+      read: intToBool(rp_com.recipe_comment_read),
       
       comment: {
         comment_id: rp_com.comment_id,
         text: rp_com.comment_text,
         created_at: rp_com.comment_created_at,
-        moified_at: rp_com.comment_moified_at,
+        modified_at: rp_com.comment_modified_at,
       },
 
       recipe_id: rp_com.recipe_id,
@@ -150,6 +154,25 @@ const findByRecipeId = async (recipe_id) => {
   return recipe_comments;
 }
 
+const findByRecipeIds = async (recipe_ids = []) => {
+  let recipe_comments = await findAll();
+  
+  recipe_comments = recipe_comments
+  .filter(recipe_comment => {
+    let match = false;
+    
+    recipe_ids.forEach(recipe_id => {
+      if(recipe_comment.recipe_id === recipe_id){
+        match = true;
+      }
+    });
+
+    return match;
+  });
+
+  return recipe_comments;
+}
+
 const deleteByRecipeCommentId = async (recipe_comment_id) => {
 
   const recipe_comment = await findByRecipeCommentId(recipe_comment_id);
@@ -169,10 +192,29 @@ const deleteByRecipeCommentId = async (recipe_comment_id) => {
   return recipe_comment;
 }
 
+const updateByRecipeCommentId = async (recipe_comment_id, changes) => {
+  const recipe_comment = await findByRecipeCommentId(recipe_comment_id);
+  
+  await db('recipe_comments')
+  .where({
+    recipe_comment_id
+  })
+  .update({
+    recipe_comment_read: typeof changes.read === 'boolean' ? boolToInt(changes.read) : recipe_comment.read,
+    recipe_comment_modified_at: db.fn.now()
+  })
+  
+  const updated_recipe_comment = await findByRecipeCommentId(recipe_comment_id);
+
+  return updated_recipe_comment;
+}
+
 module.exports = {
   findAll,
   findByRecipeCommentId,
   findByRecipeId,
+  findByRecipeIds,
   create,
-  deleteByRecipeCommentId
+  deleteByRecipeCommentId,
+  updateByRecipeCommentId
 }
