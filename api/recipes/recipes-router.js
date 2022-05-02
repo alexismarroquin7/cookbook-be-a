@@ -7,7 +7,7 @@ const {
 
 router.get('/', async (req, res, next) => {
   try {
-    const recipes = await Recipe.findAll();
+    const recipes = await Recipe.findAll(req.query);
     res.status(200).json(recipes);
   } catch (err) {
     next(err);

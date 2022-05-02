@@ -238,6 +238,9 @@ exports.up = async (knex) => {
     .onUpdate('CASCADE')
     .onDelete('RESTRICT');
 
+    recipe_likes.integer('recipe_like_read')
+    .defaultTo(0);
+
     recipe_likes.timestamp('recipe_like_created_at')
     .defaultTo(knex.fn.now());  
     
@@ -306,12 +309,15 @@ exports.up = async (knex) => {
     .onDelete('RESTRICT');
     comments.timestamp('comment_created_at')
     .defaultTo(knex.fn.now());
-    comments.timestamp('comment_moified_at')
+    comments.timestamp('comment_modified_at')
     .defaultTo(knex.fn.now());
   })
   .createTable('recipe_comments', recipe_comments => {
     recipe_comments.increments('recipe_comment_id');
     
+    recipe_comments.integer('recipe_comment_read')
+    .defaultTo(0);
+
     recipe_comments.integer('comment_id')
     .unsigned()
     .notNullable()
@@ -330,7 +336,7 @@ exports.up = async (knex) => {
 
     recipe_comments.timestamp('recipe_comment_created_at')
     .defaultTo(knex.fn.now());
-    recipe_comments.timestamp('recipe_comment_moified_at')
+    recipe_comments.timestamp('recipe_comment_modified_at')
     .defaultTo(knex.fn.now());
   })
   ;

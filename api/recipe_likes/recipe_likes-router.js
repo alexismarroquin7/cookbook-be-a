@@ -1,6 +1,11 @@
 const router = require('express').Router();
 const RecipeLike = require('./recipe_likes-model');
-const { validateRecipeLikeExistsByRecipeLikeId, validateNewRecipeLikeRequiredFields, validateRecipeLikeUnique } = require('./recipe_likes-middleware');
+const { 
+  validateRecipeLikeExistsByRecipeLikeId,
+  validateNewRecipeLikeRequiredFields,
+  validateRecipeLikeUnique,
+  validateUpdatedRecipeLikeRequiredFields
+} = require('./recipe_likes-middleware');
 
 router.post(
   '/',
@@ -16,7 +21,27 @@ router.post(
     } catch (err) {
       next(err);
     }
-});
+  }
+);
+
+router.put(
+  '/:recipe_like_id',
+  validateRecipeLikeExistsByRecipeLikeId,
+  validateUpdatedRecipeLikeRequiredFields,
+  async (req, res, next) => {
+    try {
+      const recipe_like = await RecipeLike
+      .updateByRecipeLikeId(
+        Number(req.params.recipe_like_id),
+        req.body
+      );
+      
+      res.status(200).json(recipe_like);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 router.delete(
   '/:recipe_like_id',
@@ -30,7 +55,8 @@ router.delete(
     } catch (err) {
       next(err);
     }
-});
+  }
+);
 
 router.use((err, req, res, next) => { // eslint-disable-line
   res.status(err.status||500).json({

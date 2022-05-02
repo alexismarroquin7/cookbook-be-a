@@ -57,8 +57,22 @@ const validateRecipeLikeUnique = async (req, res, next) => {
   }
 }
 
+const validateUpdatedRecipeLikeRequiredFields = async (req, res, next) => {
+  const {read} = req.body;
+
+  if(typeof read !== 'boolean'){
+    next({
+      status: 400,
+      message: 'missing required fields'
+    })
+  } else {
+    next()
+  }
+}
+
 module.exports = {
   validateRecipeLikeExistsByRecipeLikeId,
   validateNewRecipeLikeRequiredFields,
-  validateRecipeLikeUnique
+  validateRecipeLikeUnique,
+  validateUpdatedRecipeLikeRequiredFields
 }
